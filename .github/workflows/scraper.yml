@@ -5,6 +5,9 @@ on:
     - cron: "0 4,16 * * *" # twice a day, 04:00 and 16:00 UTC
   workflow_dispatch: {}
 
+permissions:
+  contents: read
+
 defaults:
   run:
     working-directory: pipeline
