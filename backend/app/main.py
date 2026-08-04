@@ -9,6 +9,12 @@ app = FastAPI(title="IPO Sahayak API")
 # Defaults to "*" so local/hackathon dev isn't blocked before the deployed frontend URL is known.
 allowed_origins = os.environ.get("ALLOWED_ORIGINS", "*").split(",")
 
+if allowed_origins == ["*"]:
+    print(
+        "WARNING: ALLOWED_ORIGINS not set — CORS is wide open (*). "
+        "Set ALLOWED_ORIGINS in Render once the Vercel URL is known."
+    )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
