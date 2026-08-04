@@ -257,3 +257,4 @@ terraform.rc
 .vscode/
 .idea/
 
+.env
