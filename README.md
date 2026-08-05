@@ -26,7 +26,7 @@ Live deployment blocked on connecting Render/Vercel to the repo (manual step).
 - 3 GitHub Actions workflows (backend, frontend, scraper), read-only permissions
 - CORS restricted via env var, Docker runs as non-root
 
-**Pending (manual, not code):**
-- [ ] Create Supabase project, enable `pgvector`
-- [ ] Connect repo to Render (`/backend`) and Vercel (`/frontend`)
-- [ ] Set `ALLOWED_ORIGINS` in Render once the Vercel URL is known
+**Done (manual, not code):**
+- [✓] Create Supabase project, enable `pgvector`
+- [✓] Connect repo to Render (`/backend`) and Vercel (`/frontend`)
+- [✓] Set `ALLOWED_ORIGINS` in Render once the Vercel URL is known
