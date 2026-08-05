@@ -15,18 +15,18 @@ prospectus documents and answers investor questions in plain language, always ci
 
 Work in progress — built epic by epic via feature branches and PRs into `main`.
 
-Progress
-Epic 1: Cloud Foundation + CI/CD Skeleton — 🟡 Code done, deployment pending
+## Progress
 
-Hello-world backend + frontend, CI/CD workflows, and Render config — merged. Live deployment blocked on connecting Render/Vercel to the repo (manual step).
+### Epic 1: Cloud Foundation + CI/CD Skeleton — 🟡 Code done, deployment pending
+Hello-world backend + frontend, CI/CD workflows, and Render config — merged.
+Live deployment blocked on connecting Render/Vercel to the repo (manual step).
 
-Backend: FastAPI, Docker, pytest, ruff
-Frontend: Vite/React, pings backend /health
-3 GitHub Actions workflows (backend, frontend, scraper), read-only permissions
-CORS restricted via env var, Docker runs as non-root
+- Backend: FastAPI, Docker, pytest, ruff
+- Frontend: Vite/React, pings backend `/health`
+- 3 GitHub Actions workflows (backend, frontend, scraper), read-only permissions
+- CORS restricted via env var, Docker runs as non-root
 
-Pending (manual):
-
- Create Supabase project, enable pgvector
- Connect repo to Render (/backend) and Vercel (/frontend)
- Set ALLOWED_ORIGINS in Render once the Vercel URL is known
+**Pending (manual, not code):**
+- [ ] Create Supabase project, enable `pgvector`
+- [ ] Connect repo to Render (`/backend`) and Vercel (`/frontend`)
+- [ ] Set `ALLOWED_ORIGINS` in Render once the Vercel URL is known
