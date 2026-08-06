@@ -1,0 +1,11 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+# Fixture strings are captured verbatim from real SEBI HTML — reformatting them would
+# defeat the point of testing against the real thing.
+"tests/test_sebi_client.py" = ["E501"]
