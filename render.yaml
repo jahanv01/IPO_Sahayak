@@ -16,6 +16,10 @@ services:
         sync: false
       - key: DATABASE_URL
         sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        sync: false
       # Set this to the Vercel URL once known — until then the backend logs a
       # boot-time warning and falls back to "*" (wide-open CORS).
       - key: ALLOWED_ORIGINS
