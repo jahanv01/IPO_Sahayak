@@ -59,3 +59,51 @@ Gas Exchange, Veritas Finance, Yogiji Digi).
   URI is IPv6-only and unreachable from GitHub Actions runners) as a GitHub Actions secret
 - [✓] Rotate the Supabase DB password after an unencoded `@` in it caused a URL
   mis-parse that leaked a password fragment into a workflow log
+
+### Epic 3: AI / Search Engine — 🟢 Done
+Given a question, return a grounded, cited answer. Two-stage retrieval (pgvector search
++ cross-encoder re-rank) feeds a handful of the most relevant DRHP excerpts to an LLM
+under a strict grounding prompt, and every citation it returns is checked against the
+source text before being shown.
+
+- `app/embeddings.py`: query embeddings via the same free local model the pipeline
+  indexed chunks with (`fastembed` + all-MiniLM-L6-v2) — duplicated from
+  `pipeline/embedder.py` rather than imported, since Render's Docker build context for
+  `/backend` can't see outside that directory
+- `app/reranker.py`: cross-encoder re-ranking (`fastembed` + `Xenova/ms-marco-MiniLM-L-6-v2`)
+- `app/retrieval.py`: embeds the question, pulls the top 10 candidates from pgvector, then
+  re-ranks down to the best 5 — better input, less work for the model to sift through
+- `app/answer.py`: sends the question + top 5 chunks to Gemini with a strict grounding
+  prompt (answer only from the given excerpts, cite the section/page, say "not mentioned"
+  if it isn't there), a RAFT-style instruction that some excerpts may be irrelevant
+  distractors to ignore, and a safety rule to never give buy/sell advice — then a local,
+  deterministic `verify_citations()` check confirms each cited quote actually appears in
+  its source chunk before the answer is shown
+- `ask.py`: terminal CLI — `python ask.py --company "..." <question>` — the epic's
+  milestone deliverable
+- Model: **Gemini free tier** (`gemini-flash-latest` for dev/testing, `gemini-pro-latest`
+  for demo polish via `GEMINI_MODEL`) rather than a paid API — no billing needed to build
+  or test this epic. `generate_answer(question, chunks)` keeps a stable signature so the
+  model/provider behind it can be swapped later without touching retrieval or the CLI.
+- Tests mock the Gemini client entirely — no real API calls or DB connections in CI
+
+**Validated against real data:** ran 10 real questions against 5 of the indexed DRHPs
+(Encube Ethicals, Advanced Sys Tek, Veritas Finance, Indian Gas Exchange, Yogiji Digi) —
+business summaries, risk factors, and specific financial figures (e.g. R&D spend as %
+of revenue by fiscal year) all came back correct with every citation verified against
+the source chunk. Also confirmed the model gives an honest partial answer instead of
+fabricating when only part of a question is covered (dividend history), and correctly
+refuses to give investment advice on a "should I buy this IPO" probe while still citing
+what the document itself says about relying on your own judgment.
+
+**Bugs found and fixed along the way:**
+- pgvector's `<=>` operator needs an explicit `::vector` cast on the query parameter in
+  a raw `SELECT` — unlike an `INSERT`, there's no target column to infer the type from
+- `gemini-2.5-flash`, the model current at the time this was written, already 404s as
+  "no longer available to new users" — switched to the `-latest` aliases
+  (`gemini-flash-latest` / `gemini-pro-latest`) so the code isn't pinned to a dated model
+- `ask.py`'s citation markers crashed on Windows' default `cp1252` console encoding —
+  switched to ASCII markers and forced UTF-8 stdout
+
+**Done (manual, not code):**
+- [✓] Create a free Gemini API key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
